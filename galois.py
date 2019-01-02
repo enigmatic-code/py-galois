@@ -101,13 +101,14 @@ class _GF(object):
 
   # verify a field
   def verify(self, verbose=0):
+    from enigma import Accumulator
     from itertools import product
 
-    r = [ True ]
+    r = Accumulator(fn=(lambda a, b: a & b), value=True)
 
     def check(text, value, verbose=0):
       if verbose: printf("  [{text} -> {value}]")
-      r[0] &= value
+      r.accumulate(value)
   
     if verbose: printf("[VERIFYING ...]")
     S = self.elements()
@@ -138,8 +139,8 @@ class _GF(object):
     check("add: zero", all(add(0, a) == a for a in S), verbose)
     check("mul: zero", all(mul(0, a) == 0 for a in S), verbose)    
     if 1 in S: check("mul: one", all(mul(1, a) == a for a in S), verbose)    
-    if verbose: printf("[VERIFIED]" if r[0] else "[FAILED]")
-    return r[0]
+    if verbose: printf("[VERIFIED]" if r.value else "[FAILED]")
+    return r.value
 
 
 # integers mod N
@@ -302,7 +303,11 @@ if __name__ == "__main__":
 
   N = arg(7, 0, int)
 
-  field = GF(N)
+  try:
+    field = GF(N)
+  except ValueError as e:
+    printf("ERROR: {e}")
+    exit()
   field.verify(verbose=1)
 
   printf("GF[{N}].add = [")
