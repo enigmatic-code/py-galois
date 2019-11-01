@@ -5,7 +5,7 @@ from __future__ import print_function
 
 # an implementation of finite Galois fields
 
-from enigma import prime_factor, invmod, irange, identity
+from enigma import prime_factor, invmod, irange, identity, printf
 
 # return a finite field of order N (N must be a power of a prime)
 # where N is a non-trivial power of a prime the irreducible polynomial can be provided
