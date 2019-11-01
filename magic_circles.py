@@ -79,5 +79,6 @@ if __name__ == "__main__":
   n = arg(8, 0, int)
   printf("[n={n}]")
 
-  for s in magic(n):
-    printf("{s}")
+  for (i, s) in enumerate(magic(n), start=1):
+    printf("{i}: {s}")
+  printf("[n={n}: found {i} magic circles]")
