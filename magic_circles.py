@@ -91,7 +91,7 @@ if __name__ == "__main__" or __name__ == "<run_path>":
   from enigma import arg
 
   n = arg(8, 0, int)
-  printf("[n={n}]")
+  printf("[n={n}: {x} values]", x = n * (n - 1) + 1)
 
   for (i, s) in enumerate(magic_circle(n), start=1):
     printf("{i}: {s}")
