@@ -72,7 +72,7 @@ def magic(n):
       seen[s] = 1
 
 
-if __name__ == "__main__":
+if __name__ == "__main__" or __name__ == "<run_path>":
 
   from enigma import arg
 
