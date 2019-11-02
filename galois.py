@@ -298,8 +298,9 @@ def poly_irreducible(m, n):
           yield p
 
 
-if __name__ == "__main__":
-  from enigma import arg, printf
+if __name__ == "__main__" or __name__ == "<run_path>":
+
+  from enigma import arg
 
   N = arg(7, 0, int)
 
