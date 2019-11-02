@@ -68,7 +68,8 @@ def magic_circle(n):
     # bring 1 to the start
     i = s.index(1)
     s = tuple(s[i:] + s[:i])
-    if s[1] < s[-1] and not s in seen:
+    # remove reflections and duplicates
+    if not(s[-1] < s[1] or s in seen):
       yield s
       seen[s] = 1
 
