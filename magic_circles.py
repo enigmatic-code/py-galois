@@ -28,8 +28,8 @@ def generator(f):
 def perfect_difference_set(n):
 
   # make the galois field GF(N) where N = (n - 1)^3
-  n3 = (n - 1) ** 3
-  f = GF(n3, cached=0)
+  N = (n - 1) ** 3
+  f = GF(N, cached=0)
   #printf("[perfect_difference_set: using field {f} ...]")
 
   # find an element of GF(N) that generates GF*(N)
@@ -43,7 +43,7 @@ def perfect_difference_set(n):
 
   # make the pds
   pds = [0, 1]
-  for (i, x) in enumerate(powers(f, g, n3, 2), start=2):
+  for (i, x) in enumerate(powers(f, g, N, 2), start=2):
     if f.sub(x, g) in fstar:
       pds.append(i % m)
 
