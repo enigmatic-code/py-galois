@@ -97,7 +97,11 @@ if __name__ == "__main__" or __name__ == "<run_path>":
   n = arg(8, 0, int)
   printf("[n={n}: {x} values]", x = n * (n - 1) + 1)
 
-  for (i, s) in enumerate(magic_circle(n), start=1):
-    printf("{i}: {s}")
-    assert verify_magic_circle(s)
-  printf("[n={n}: found {i} magic circles]")
+  try:
+    for (i, s) in enumerate(magic_circle(n), start=1):
+      printf("{i}: {s}")
+      assert verify_magic_circle(s)
+    printf("[n={n}: found {i} magic circles]")
+
+  except ValueError as e:
+    printf("[ERROR] {e}")
