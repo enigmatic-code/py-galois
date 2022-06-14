@@ -87,6 +87,14 @@ class _GF(object):
   def div(self, a, b):
     return self.mul(a, self.mul_inv(b))
 
+  def pow(self, a, k):
+    if k == 1: return a
+    (k, r) = divmod(k, 2)
+    x = self.pow(a, k)
+    x = self.mul(x, x)
+    if r == 1: x = self.mul(x, a)
+    return x
+
   # table of an operator
   def _table(self, op):
     for a in self.elements():
@@ -195,7 +203,9 @@ class _GF_2(_GF):
 
 # GF(p^n) general polynomial implementation
 
-from enigma import nsplit, poly_value, poly_add, poly_mul, poly_print
+from enigma import (nsplitter, poly_value, poly_add, poly_mul, poly_print, cache)
+
+int2poly = lambda p, b: list(nsplitter(p, base=b))
 
 class _GF_poly(_GF):
 
@@ -204,11 +214,16 @@ class _GF_poly(_GF):
     super(_GF_poly, self).__init__(N)
     self.p = p
     self.n = n
-    self.poly = (poly if isinstance(poly, list) else list(reversed(nsplit(poly, base=p))))
+    self.poly = (poly if isinstance(poly, list) else int2poly(poly, p))
+    self._e2p_cache = dict()
 
   # element -> poly
   def e2p(self, e):
-    return list(reversed(nsplit(e, base=self.p)))
+    r = self._e2p_cache.get(e)
+    if r is None:
+      r = int2poly(e, self.p)
+      self._e2p_cache[e] = r
+    return r
 
   # poly -> element
   def p2e(self, p):
@@ -233,7 +248,7 @@ class _GF_poly(_GF):
 
 # some extra polynomial stuff
 
-from enigma import poly_map, poly_zero, poly_unit, poly_from_pairs, poly_sub
+from enigma import (poly_map, poly_zero, poly_unit, poly_from_pairs, poly_sub)
 
 # reduce poly coefficients mod m
 def poly_mod(p, m):
