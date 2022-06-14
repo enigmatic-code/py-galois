@@ -25,7 +25,7 @@ def generator(f):
     if g in seen: continue
     seen.add(g)
     if not any(x == 1 for x in powers(f, g, f.N // 2)):
-      #printf("generator: checked {n} elements -> {g}", n=len(seen))
+      #printf("[generator: checked {n} elements -> {g}]", n=len(seen))
       yield g
 
 # make a perfect difference set of size n
@@ -56,6 +56,11 @@ def perfect_difference_set(n):
 
 # generate magic circles of size n
 def magic_circle(n):
+  if n < 1:
+    return
+  elif n < 3:
+    yield tuple(irange(1, n))
+    return
 
   # make a perfect difference set
   pds = perfect_difference_set(n)
@@ -95,10 +100,12 @@ if __name__ == "__main__" or __name__ == "<run_path>":
   from enigma import arg
 
   n = arg(8, 0, int)
-  printf("[n={n}: {x} values]", x = n * (n - 1) + 1)
+  printf("[n={n}: values 1 .. {x}]", x = n * (n - 1) + 1)
 
   try:
-    for (i, s) in enumerate(magic_circle(n), start=1):
+    i = 0
+    for s in magic_circle(n):
+      i += 1
       printf("{i}: {s}")
       assert verify_magic_circle(s)
     printf("[n={n}: found {i} magic circles]")
