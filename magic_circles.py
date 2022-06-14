@@ -1,4 +1,4 @@
-#!/usr/bin/env python -t
+#! python3
 # -*- mode: Python; py-indent-offset: 2; -*-
 
 from __future__ import print_function
@@ -6,7 +6,7 @@ from __future__ import print_function
 # generate "Magic Circles"
 
 from galois import GF
-from enigma import irange, gcd, printf
+from enigma import irange, gcd, peek, printf
 
 # calculate powers of element x in field, return x^k for k = a .. b
 def powers(f, x, b, a=1):
@@ -19,9 +19,13 @@ def powers(f, x, b, a=1):
 
 # find a generator for GF*(N), where f = GF(N)
 def generator(f):
-  for g in f.elements():
-    if g == 0: continue
+  seen = {0}
+  while True:
+    g = f.choose()
+    if g in seen: continue
+    seen.add(g)
     if not any(x == 1 for x in powers(f, g, f.N // 2)):
+      #printf("generator: checked {n} elements -> {g}", n=len(seen))
       yield g
 
 # make a perfect difference set of size n
@@ -33,11 +37,11 @@ def perfect_difference_set(n):
   #printf("[perfect_difference_set: using field {f} ...]")
 
   # find an element of GF(N) that generates GF*(N)
-  g = next(generator(f))
+  g = peek(generator(f))
 
   # find the elements of subgroup GF*(n) in GF*(N)
   m = n * (n - 1) + 1
-  x = next(powers(f, g, m, m))
+  x = peek(powers(f, g, m, m))
   fstar = [x]
   fstar.extend(powers(f, x, n - 2, 2))
 
@@ -46,10 +50,9 @@ def perfect_difference_set(n):
   for (i, x) in enumerate(powers(f, g, N, 2), start=2):
     if f.sub(x, g) in fstar:
       pds.append(i % m)
-
   pds.sort()
   return pds
-        
+
 
 # generate magic circles of size n
 def magic_circle(n):
