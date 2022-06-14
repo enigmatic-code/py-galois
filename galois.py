@@ -88,12 +88,14 @@ class _GF(object):
     return self.mul(a, self.mul_inv(b))
 
   def pow(self, a, k):
+    if k == 0: return 1
     if k == 1: return a
-    (k, r) = divmod(k, 2)
-    x = self.pow(a, k)
-    x = self.mul(x, x)
-    if r == 1: x = self.mul(x, a)
-    return x
+    r = 1
+    while k > 0:
+      (k, m) = divmod(k, 2)
+      if m: r = self.mul(r, a)
+      if k: a = self.mul(a, a)
+    return r
 
   # table of an operator
   def _table(self, op):
@@ -114,8 +116,7 @@ class _GF(object):
 
   # verify a field
   def verify(self, verbose=0):
-    from enigma import Accumulator
-    from itertools import product
+    from enigma import (Accumulator, product)
 
     r = Accumulator(fn=(lambda a, b: a & b), value=True)
 
@@ -240,6 +241,19 @@ class _GF_poly(_GF):
     (d, r) = poly_divmod(poly_mul(self.e2p(a), self.e2p(b)), self.poly)
     return self.p2e(r)
 
+  def pow(self, a, k):
+    if k == 0: return 1
+    if k == 1: return a
+    p = self.e2p(a)
+    r = self.e2p(1)
+    while k > 0:
+      (k, m) = divmod(k, 2)
+      if m: r = poly_mul(r, p)
+      if k: p = poly_mul(p, p)
+      if m or k: p = poly_mod(p, self.p)
+      (d, r) = poly_divmod(r, self.poly)
+    return self.p2e(r)
+
   # generate irreducible monic polys
   def irreducible_poly(self):
     for p in poly_irreducible(self.p, self.n):
@@ -274,7 +288,7 @@ def poly_divmod(p, q, div=None, normalise=identity):
 
 # generate irreducible monic polys for GF(m^n)
 def poly_irreducible(m, n):
-  from itertools import product, combinations
+  from itertools import (product, combinations)
 
   # everything happens mod m (which is the prime (p) in N = p^n)
   normalise = (lambda p: poly_mod(p, m))
