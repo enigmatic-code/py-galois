@@ -8,14 +8,14 @@ from __future__ import print_function
 from galois import GF
 from enigma import irange, gcd, peek, printf
 
-# calculate powers of element x in field, return x^k for k = a .. b
-def powers(f, x, b, a=1):
-  n = 1
-  r = x
-  while not(n > b):
-    if not(n < a): yield r
-    n += 1
+# calculate powers of element x in field, return x^k for k = 1 .. b
+def powers(f, x, b):
+  (a, r) = (1, x)
+  while True:
+    yield r
+    if b == 1: break
     r = f.mul(r, x)
+    b -= 1
 
 # find a generator for GF*(N), where f = GF(N)
 def generator(f):
@@ -41,13 +41,12 @@ def perfect_difference_set(n):
 
   # find the elements of subgroup GF*(n) in GF*(N)
   m = n * (n - 1) + 1
-  x = peek(powers(f, g, m, m))
-  fstar = [x]
-  fstar.extend(powers(f, x, n - 2, 2))
+  fstar = set(powers(f, f.pow(g, m), n - 2))
 
   # make the pds
   pds = [0, 1]
-  for (i, x) in enumerate(powers(f, g, N, 2), start=2):
+  for (i, x) in enumerate(powers(f, g, N), start=1):
+    if i == 1: continue
     if f.sub(x, g) in fstar:
       pds.append(i % m)
   pds.sort()
