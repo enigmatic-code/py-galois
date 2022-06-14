@@ -1,11 +1,11 @@
-#!/usr/bin/env python -t
+#! python3
 # -*- mode: Python; py-indent-offset: 2; -*-
 
 from __future__ import print_function
 
 # an implementation of finite Galois fields
 
-from enigma import prime_factor, invmod, irange, identity, printf
+from enigma import (prime_factor, invmod, irange, peek, identity, printf)
 
 # return a finite field of order N (N must be a power of a prime)
 # where N is a non-trivial power of a prime the irreducible polynomial can be provided
@@ -25,7 +25,7 @@ def GF(N, poly=None, cached=1):
 
     # if n > 1 we can use a polynomial field
     if n > 1:
-      if poly is None: poly = _gf_irreducible.get(N, None) or next(poly_irreducible(p, n))
+      if poly is None: poly = _gf_irreducible.get(N, None) or peek(poly_irreducible(p, n))
       #printf("[GF(N={N}): poly={poly[0]} [{poly[1]}]]", poly=(poly_print(poly), poly_value(poly, p)) if isinstance(poly, list) else (poly_print(reversed(nsplit(poly, base=p))), poly))
       if p == 2:
         return cache(_GF_2(n, poly))
@@ -63,6 +63,11 @@ class _GF(object):
 
   def elements(self):
     return irange(0, self.N - 1)
+
+  # choose a random element
+  def choose(self):
+    import random
+    return random.randint(0, self.N - 1)
 
   # inverse of an operator
   def _inv(self, op, i, a):
@@ -109,7 +114,7 @@ class _GF(object):
     def check(text, value, verbose=0):
       if verbose: printf("  [{text} -> {value}]")
       r.accumulate(value)
-  
+
     if verbose: printf("[VERIFYING ...]")
     S = self.elements()
     add = self.add
@@ -137,8 +142,8 @@ class _GF(object):
     check("mul: distributive", all(mul(a, add(b, c)) == add(mul(a, b), mul(a, c)) for (a, b, c) in product(S, repeat=3)), verbose)
     # 0 and 1 behave themselves
     check("add: zero", all(add(0, a) == a for a in S), verbose)
-    check("mul: zero", all(mul(0, a) == 0 for a in S), verbose)    
-    if 1 in S: check("mul: one", all(mul(1, a) == a for a in S), verbose)    
+    check("mul: zero", all(mul(0, a) == 0 for a in S), verbose)
+    if 1 in S: check("mul: one", all(mul(1, a) == a for a in S), verbose)
     if verbose: printf("[VERIFIED]" if r.value else "[FAILED]")
     return r.value
 
@@ -172,7 +177,7 @@ class _GF_2(_GF):
     super(_GF_2, self).__init__(N)
     self.mask = N
     self.poly = (poly_value(poly, 2) if isinstance(poly, list) else poly)
-    
+
   def add(self, a, b):
     return a ^ b
 
@@ -305,6 +310,7 @@ if __name__ == "__main__" or __name__ == "<run_path>":
   N = arg(7, 0, int)
 
   try:
+    printf("[generating GF({N}) ...]")
     field = GF(N)
   except ValueError as e:
     printf("ERROR: {e}")
