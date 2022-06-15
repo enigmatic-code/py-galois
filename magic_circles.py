@@ -19,13 +19,9 @@ def powers(f, x, b):
 
 # find a generator for GF*(N), where f = GF(N)
 def generator(f):
-  seen = {0}
-  while True:
-    g = f.choose()
-    if g in seen: continue
-    seen.add(g)
-    if not any(x == 1 for x in powers(f, g, f.N // 2)):
-      #printf("[generator: checked {n} elements -> {g}]", n=len(seen) - 1)
+  for g in f.elements():
+    if g != 0 and not any(x == 1 for x in powers(f, g, f.N // 2)):
+      #printf("[generator: g = {g}]")
       yield g
 
 # make a perfect difference set of size n
