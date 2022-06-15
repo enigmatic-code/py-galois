@@ -20,7 +20,7 @@ def GF(N, poly=None, cached=1):
   if N > 1:
     # the order is always p^n for prime n
     fs = list(prime_factor(N))
-    if len(fs) > 1: raise ValueError("impossible")
+    if len(fs) > 1: raise ValueError("impossible (cannot construct GF({N}))".format(N=N))
     (p, n) = fs[0]
 
     # if n > 1 we can use a polynomial field
@@ -234,6 +234,10 @@ class _GF_poly(_GF):
   def add(self, a, b):
     # add the corresponding polys
     return self.p2e(poly_add(self.e2p(a), self.e2p(b)))
+
+  def sub(self, a, b):
+    # subtract the corresponding polys
+    return self.p2e(poly_sub(self.e2p(a), self.e2p(b)))
 
   # multiplication
   def mul(self, a, b):
