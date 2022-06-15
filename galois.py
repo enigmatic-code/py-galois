@@ -190,6 +190,8 @@ class _GF_2(_GF):
   def add(self, a, b):
     return a ^ b
 
+  sub = add
+
   def mul(self, a, b):
     mask = self.mask
     poly = self.poly
