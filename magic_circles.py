@@ -6,7 +6,7 @@ from __future__ import print_function
 # generate "Magic Circles"
 
 from galois import GF
-from enigma import irange, gcd, peek, printf
+from enigma import (irange, gcd, peek, printf)
 
 # calculate powers of element x in field, return x^k for k = 1 .. b
 def powers(f, x, b):
@@ -25,7 +25,7 @@ def generator(f):
     if g in seen: continue
     seen.add(g)
     if not any(x == 1 for x in powers(f, g, f.N // 2)):
-      #printf("[generator: checked {n} elements -> {g}]", n=len(seen))
+      #printf("[generator: checked {n} elements -> {g}]", n=len(seen) - 1)
       yield g
 
 # make a perfect difference set of size n
@@ -41,7 +41,8 @@ def perfect_difference_set(n):
 
   # find the elements of subgroup GF*(n) in GF*(N)
   m = n * (n - 1) + 1
-  fstar = set(powers(f, f.pow(g, m), n - 2))
+  x = f.pow(g, m)
+  fstar = set(powers(f, x, n - 2))
 
   # make the pds
   pds = [0, 1]
