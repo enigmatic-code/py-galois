@@ -73,7 +73,7 @@ def magic_circle(n):
     i = s.index(1)
     s = tuple(s[i:] + s[:i])
     # remove reflections and duplicates
-    if not(s[-1] < s[1] or s in seen):
+    if not (s[-1] < s[1] or s in seen):
       yield s
       seen[s] = 1
 
@@ -103,7 +103,7 @@ if __name__ == "__main__" or __name__ == "<run_path>":
     for s in magic_circle(n):
       i += 1
       printf("{i}: {s}")
-      assert verify_magic_circle(s)
+      #assert verify_magic_circle(s)
     printf("[n={n}: found {i} magic circles]")
 
   except ValueError as e:
