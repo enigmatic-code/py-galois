@@ -162,6 +162,7 @@ class _GF_mod(_GF):
   def __init__(self, N):
     super(_GF_mod, self).__init__(N)
     self.add = lambda a, b: (a + b) % N
+    self.sub = lambda a, b: (a - b) % N
     self.mul = lambda a, b: (a * b) % N
     self.add_inv = lambda a: (-a) % N
     self.mul_inv = lambda a: (None if a == 0  else invmod(a, N))
@@ -350,6 +351,7 @@ if __name__ == "__main__" or __name__ == "<run_path>":
   except ValueError as e:
     printf("ERROR: {e}")
     exit()
+  printf("[GF({N}) = {field}]")
   field.verify(verbose=1)
 
   printf("GF[{N}].add = [")
