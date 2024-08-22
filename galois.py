@@ -214,7 +214,7 @@ int2poly = lambda p, b: list(nsplitter(p, base=b))
 class _GF_poly(_GF):
 
   def __init__(self, p, n, poly):
-    N = p ** n
+    N = p**n
     super(_GF_poly, self).__init__(N)
     self.p = p
     self.n = n
@@ -361,4 +361,3 @@ if __name__ == "__main__" or __name__ == "<run_path>":
   printf("GF[{N}].mul = [")
   for row in field.table_mul(): printf("  {row},")
   printf("]")
-
