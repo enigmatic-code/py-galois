@@ -28,7 +28,7 @@ def generator(f):
 def perfect_difference_set(n):
 
   # make the galois field GF(N) where N = (n - 1)^3
-  N = (n - 1) ** 3
+  N = (n - 1)**3
   f = GF(N, cached=0)
   #printf("[perfect_difference_set: using field {f} ...]")
 
@@ -50,8 +50,8 @@ def perfect_difference_set(n):
   return pds
 
 
-# generate magic circles of size n
-def magic_circle(n):
+# generate magic circles of size n (set refl=1 to include reflections)
+def magic_circle(n, refl=0):
   if n < 1:
     return
   elif n < 3:
@@ -71,9 +71,9 @@ def magic_circle(n):
     s.append(m + ds[0] - ds[n - 1])
     # bring 1 to the start
     i = s.index(1)
-    s = tuple(s[i:] + s[:i])
+    s = tuple(s if i == 0 else s[i:] + s[:i])
     # remove reflections and duplicates
-    if not (s[-1] < s[1] or s in seen):
+    if (s[1] < s[-1] or refl) and s not in seen:
       yield s
       seen[s] = 1
 
